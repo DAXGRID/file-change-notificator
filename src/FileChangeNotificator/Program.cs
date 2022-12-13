@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FileChangeNotificator.FileWatcher;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -17,6 +18,8 @@ internal static class Program
             {
                 services.AddHostedService<FileChangeNotificatorHost>();
                 services.AddLogging(l => l.AddSerilog(GetLogger()));
+                services.AddSingleton<Setting>(GetSettings());
+                services.AddSingleton<FileChangeNotify>();
             })
             .Build();
 
