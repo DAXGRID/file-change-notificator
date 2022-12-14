@@ -7,7 +7,7 @@ internal sealed record Setting
     [JsonPropertyName("watchDirectory")]
     public string WatchDirectory { get; init; }
 
-    [JsonPropertyName("notificationServerUri")]
+    [JsonPropertyName("notificationServerDomain")]
     public string NotificationServerDomain { get; init; }
 
     [JsonPropertyName("notificationServerPort")]
