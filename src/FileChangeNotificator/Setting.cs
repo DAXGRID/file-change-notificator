@@ -8,10 +8,16 @@ internal sealed record Setting
     public string WatchDirectory { get; init; }
 
     [JsonPropertyName("notificationServerUri")]
-    public string NotificationServerUri { get; init; }
+    public string NotificationServerDomain { get; init; }
+
+    [JsonPropertyName("notificationServerPort")]
+    public int NotificationServerPort { get; init; }
 
     [JsonConstructor]
-    public Setting(string watchDirectory, string notificationServerUri)
+    public Setting(
+        string watchDirectory,
+        string notificationServerDomain,
+        int notificationServerPort)
     {
         if (string.IsNullOrWhiteSpace(watchDirectory))
         {
@@ -20,14 +26,15 @@ internal sealed record Setting
                 nameof(watchDirectory));
         }
 
-        if (string.IsNullOrWhiteSpace(notificationServerUri))
+        if (string.IsNullOrWhiteSpace(notificationServerDomain))
         {
             throw new ArgumentException(
-                $"'{nameof(notificationServerUri)}' cannot be null or whitespace.",
-                nameof(notificationServerUri));
+                $"'{nameof(notificationServerDomain)}' cannot be null or whitespace.",
+                nameof(notificationServerDomain));
         }
 
         WatchDirectory = watchDirectory;
-        NotificationServerUri = notificationServerUri;
+        NotificationServerDomain = notificationServerDomain;
+        NotificationServerPort = notificationServerPort;
     }
 }
