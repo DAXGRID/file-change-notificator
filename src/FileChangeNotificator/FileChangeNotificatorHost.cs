@@ -48,7 +48,7 @@ internal sealed class FileChangeNotificatorHost : BackgroundService
 
             _notificationClient.Send(
                 new Notification(
-                    "FileChangeEvent",
+                    "FileChangedEvent",
                     JsonSerializer.Serialize(changedEvent)
                 ));
         };
