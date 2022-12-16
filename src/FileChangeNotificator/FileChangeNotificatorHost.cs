@@ -19,8 +19,7 @@ internal sealed class FileChangeNotificatorHost : BackgroundService
     public FileChangeNotificatorHost(
         ILogger<FileChangeNotificatorHost> logger,
         FileChangeNotify fileChangeNotify,
-        Setting setting
-    )
+        Setting setting)
     {
         _logger = logger;
         _fileChangeNotify = fileChangeNotify;
@@ -50,7 +49,8 @@ internal sealed class FileChangeNotificatorHost : BackgroundService
                 new Notification(
                     "FileChangedEvent",
                     JsonSerializer.Serialize(changedEvent)
-                ));
+                )
+            );
         };
 
         _fileChangeNotify.Start(f);
