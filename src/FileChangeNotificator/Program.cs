@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using System.Globalization;
 using System.Text.Json;
 
 namespace FileChangeNotificator;
@@ -58,7 +59,7 @@ internal static class Program
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .MinimumLevel.Information()
             .Enrich.FromLogContext()
-            .WriteTo.Console()
+            .WriteTo.Console(formatProvider: CultureInfo.InvariantCulture)
             .CreateLogger();
     }
 }
