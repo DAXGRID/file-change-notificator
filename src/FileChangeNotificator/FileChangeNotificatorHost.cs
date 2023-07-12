@@ -61,4 +61,11 @@ internal sealed class FileChangeNotificatorHost : BackgroundService
 
         return Task.CompletedTask;
     }
+
+    public override void Dispose()
+    {
+        _notificationClient.Dispose();
+        base.Dispose();
+    }
+
 }
