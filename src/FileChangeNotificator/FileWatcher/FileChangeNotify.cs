@@ -31,6 +31,7 @@ internal sealed class FileChangeNotify : IDisposable
     {
         _fileChangedCallback = fileChangeCallback;
 
+        _watcher.IncludeSubdirectories = true;
         _watcher.NotifyFilter = NotifyFilters.LastWrite;
         _watcher.Error += OnError;
         _watcher.EnableRaisingEvents = true;
