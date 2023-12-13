@@ -37,40 +37,52 @@ internal sealed class FileChangeNotify : IDisposable
         _watcher.EnableRaisingEvents = true;
 
         Observable.FromEventPattern<FileSystemEventArgs>(_watcher, "Changed")
-               .GroupByUntil(
-                    item => item.EventArgs.FullPath,
-                    item => Observable.Timer(TimeSpan.FromSeconds(10), Scheduler.Default))
+            .GroupByUntil(
+                item => item.EventArgs.FullPath,
+                item => Observable.Timer(TimeSpan.FromSeconds(10), Scheduler.Default))
             .SelectMany(y => y.LastAsync())
             .Subscribe(OnChanged);
     }
 
     private void OnChanged(EventPattern<FileSystemEventArgs> obj)
     {
-        var (_, e) = obj;
-        if (e == null)
+        try
         {
-            return;
+            var (_, e) = obj;
+            if (e == null)
+            {
+                return;
+            }
+
+            if (e.ChangeType != WatcherChangeTypes.Changed)
+            {
+                return;
+            }
+
+            var sha256CheckSum = SHA256CheckSum(e.FullPath);
+            if (string.IsNullOrWhiteSpace(sha256CheckSum))
+            {
+                throw new InvalidOperationException(
+                    $"File '{e.FullPath}' SHA256Checksum cannot be null, empty or empty.");
+            }
+
+            // We replace it here so only from the current path from fileserver.
+            var fullPath = e.FullPath.Replace(
+                _watchSetting.WatchDirectory,
+                string.Empty,
+                StringComparison.Ordinal);
+
+            _fileChangedCallback!(new(fullPath, sha256CheckSum));
+
         }
-
-        if (e.ChangeType != WatcherChangeTypes.Changed)
-        {
-            return;
-        }
-
-        var sha256CheckSum = SHA256CheckSum(e.FullPath);
-        if (string.IsNullOrWhiteSpace(sha256CheckSum))
-        {
-            throw new InvalidOperationException(
-                $"File '{e.FullPath}' SHA256Checksum cannot be null, empty or empty.");
-        }
-
-        // We replace it here so only from the current path from fileserver.
-        var fullPath = e.FullPath.Replace(
-            _watchSetting.WatchDirectory,
-            string.Empty,
-            StringComparison.Ordinal);
-
-        _fileChangedCallback!(new(fullPath, sha256CheckSum));
+        // This might happen if the filename of the files uploaded is not encoded correctly.
+        // This can also happen if the file is deleted before we had the chance to read it.
+        catch (Exception ex)
+            when (ex is IOException ||
+                  ex is FileNotFoundException)
+            {
+                _logger.LogError("{Exception}", ex);
+            }
     }
 
     private void OnError(object sender, ErrorEventArgs e) =>
