@@ -77,12 +77,11 @@ internal sealed class FileChangeNotify : IDisposable
         }
         // This might happen if the filename of the files uploaded is not encoded correctly.
         // This can also happen if the file is deleted before we had the chance to read it.
-        catch (Exception ex)
-            when (ex is IOException ||
-                  ex is FileNotFoundException)
-            {
-                _logger.LogError("{Exception}", ex);
-            }
+        catch (Exception ex) when (ex is IOException ||
+                                   ex is FileNotFoundException)
+        {
+            _logger.LogError("{Exception}", ex);
+        }
     }
 
     private void OnError(object sender, ErrorEventArgs e) =>
