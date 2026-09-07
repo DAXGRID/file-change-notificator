@@ -12,3 +12,6 @@ dotnet_diagnostic.CA1812.severity = none
 
 # CA1014: We don't care since this is not a public library
 dotnet_diagnostic.CA1014.severity = none
+
+# CA1873: We won't disable logging.
+dotnet_diagnostic.CA1873.severity = none
