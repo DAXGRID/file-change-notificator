@@ -9,7 +9,7 @@ executors:
         password: $DOCKER_ACCESSTOKEN
   docker-publisher:
     environment:
-      IMAGE_NAME: openftth/file-change-notificator
+      IMAGE_NAME: daxgrid/file-change-notificator
     docker:
       - image: cimg/base:current
         auth:
