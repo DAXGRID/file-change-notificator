@@ -15,5 +15,8 @@ RUN dotnet publish -c Release -o out --packages ./packages
 FROM mcr.microsoft.com/dotnet/runtime:10.0-alpine
 WORKDIR /app
 
-COPY --from=build-env /app/src/FileChangeNotificator/out .
+COPY --from=build-env --chown=65534:65534 /app/src/FileChangeNotificator/out .
+
+USER 65534
+
 ENTRYPOINT ["dotnet", "FileChangeNotificator.dll"]
